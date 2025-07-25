@@ -7,16 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
     <Compile Remove="DTOs\**" />
     <Compile Remove="Models\**" />
-    <Content Remove="Controllers\**" />
     <Content Remove="DTOs\**" />
     <Content Remove="Models\**" />
-    <EmbeddedResource Remove="Controllers\**" />
     <EmbeddedResource Remove="DTOs\**" />
     <EmbeddedResource Remove="Models\**" />
-    <None Remove="Controllers\**" />
     <None Remove="DTOs\**" />
     <None Remove="Models\**" />
   </ItemGroup>

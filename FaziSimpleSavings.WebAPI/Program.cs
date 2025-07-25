@@ -3,7 +3,9 @@ using FluentValidation;
 using Infrastructure.Authentication;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,24 @@ builder.Services.AddDbContext<IAppDbContext, Infrastructure.Persistence.AppDbCon
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Or UseInMemory/UseNpgsql
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 
 
@@ -36,6 +56,10 @@ builder.Services.AddOpenApi();
 
 
 var app = builder.Build();
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

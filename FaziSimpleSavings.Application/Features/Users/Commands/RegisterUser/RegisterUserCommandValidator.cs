@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Features.Users.Commands.RegisterUser;
+namespace FaziSimpleSavings.Application.Features.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {

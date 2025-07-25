@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Application.Features.Users.Commands.RegisterUser;
+namespace FaziSimpleSavings.Application.Features.Users.Commands.RegisterUser;
 
 public class RegisterUserCommand : IRequest<string> // Returns JWT token
 {

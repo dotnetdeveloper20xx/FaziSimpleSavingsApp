@@ -1,10 +1,9 @@
 ﻿using Application.Interfaces;
-
 using FaziSimpleSavings.Core.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Users.Commands.RegisterUser;
+namespace FaziSimpleSavings.Application.Features.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
 {

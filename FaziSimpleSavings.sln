@@ -11,13 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaziSimpleSavings.Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaziSimpleSavings.WebAPI", "FaziSimpleSavings.WebAPI\FaziSimpleSavings.WebAPI.csproj", "{88EE62EA-3BE3-419F-9CF0-E273A835F576}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaziSimpleSavings.Test", "FaziSimpleSavings.Test\FaziSimpleSavings.Test.csproj", "{C20A3C88-22E7-4225-AADF-A3BD648C41F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5DF1DEF7-C085-4EF0-8CED-2ED199353113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +35,12 @@ Global
 		{88EE62EA-3BE3-419F-9CF0-E273A835F576}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88EE62EA-3BE3-419F-9CF0-E273A835F576}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88EE62EA-3BE3-419F-9CF0-E273A835F576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
