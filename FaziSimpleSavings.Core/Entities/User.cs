@@ -11,6 +11,8 @@ public class User
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; private set; }
 
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
     public User(string firstName, string lastName, string email)
     {
         FirstName = !string.IsNullOrWhiteSpace(firstName) ? firstName : throw new ArgumentException("First name cannot be empty.");

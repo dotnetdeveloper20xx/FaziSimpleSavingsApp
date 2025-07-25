@@ -1,6 +1,7 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using FluentValidation;
 using Infrastructure.Authentication;
+using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -46,7 +47,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "FaziSimpleSavings API", Version = "v1" });
 
-    // Optional: JWT auth support in Swagger UI
+    //Add JWT Bearer auth to Swagger
     c.AddSecurityDefinition("Bearer", new()
     {
         Name = "Authorization",
@@ -57,11 +58,18 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter 'Bearer {your JWT token}'"
     });
 
-    c.AddSecurityRequirement(new()
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new() { Reference = new() { Type = ReferenceType.SecurityScheme, Id = "Bearer" } },
-            new List<string>()
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
         }
     });
 });
@@ -75,11 +83,11 @@ builder.Services.AddSwaggerGen(c =>
 
 
 
+
 var app = builder.Build();
 
 
-app.UseAuthentication();
-app.UseAuthorization();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -94,6 +102,17 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "FaziSimpleSavings API v1");
 });
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Run seeding logic
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate(); // ensure schema is applied
+    await SeedData.SeedAsync(dbContext); // run seeding
+}
 
 app.Run();
 

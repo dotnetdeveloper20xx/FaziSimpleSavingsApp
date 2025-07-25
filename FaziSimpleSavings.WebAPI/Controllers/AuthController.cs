@@ -1,6 +1,7 @@
 ﻿using Application.Features.Users.Commands.LoginUser;
 using FaziSimpleSavings.Application.Features.Users.Commands.RegisterUser;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FaziSimpleSavings.WebAPI.Controllers;
@@ -28,5 +29,12 @@ public class AuthController : ControllerBase
     {
         var token = await _mediator.Send(command);
         return Ok(new { Token = token });
+    }
+
+    [HttpGet("dashboard")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult GetAdminDashboard()
+    {
+        return Ok(new { Message = "You are an admin." });
     }
 }

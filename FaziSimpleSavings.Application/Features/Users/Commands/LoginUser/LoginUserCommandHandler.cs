@@ -18,9 +18,11 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
     public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
+     .Include(u => u.UserRoles)
+         .ThenInclude(ur => ur.Role)
+     .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
-        if (user == null)
+        if (user == null || request.Password != "password")
             throw new UnauthorizedAccessException("Invalid credentials.");
 
         // For demo/testing: password is not encrypted
