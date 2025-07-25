@@ -28,5 +28,21 @@ public static class SeedData
         );
 
         await context.SaveChangesAsync();
+
+        if (!await context.SavingsGoals.AnyAsync())
+        {
+            var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@example.com");
+            var customer = await context.Users.FirstOrDefaultAsync(u => u.Email == "john@example.com");
+
+            var goals = new List<SavingsGoal>
+                        {
+                new SavingsGoal("Emergency Fund", 1000m, admin.Id),
+                 new SavingsGoal("Vacation Fund", 1000m, admin.Id),
+                  new SavingsGoal("Gadget Fund", 800m, admin.Id)
+                        };
+
+            context.SavingsGoals.AddRange(goals);
+            await context.SaveChangesAsync();
+        }
     }
 }

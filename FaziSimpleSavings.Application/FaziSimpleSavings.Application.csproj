@@ -32,7 +32,6 @@
     <Folder Include="Features\Categories\" />
     <Folder Include="Features\Notifications\" />
     <Folder Include="Features\RecurringDeposits\" />
-    <Folder Include="Features\SavingsGoals\" />
     <Folder Include="Features\Transactions\" />
     <Folder Include="Features\Users\Queries\" />
   </ItemGroup>

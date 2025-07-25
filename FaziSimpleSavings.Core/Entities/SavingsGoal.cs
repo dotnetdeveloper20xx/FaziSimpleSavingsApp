@@ -9,12 +9,24 @@ public class SavingsGoal
     public decimal TargetAmount { get; private set; }
     public decimal CurrentAmount { get; private set; } = 0m;
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public Guid UserId { get; private set; }
+    public User User { get; private set; } = null!;
 
-    public SavingsGoal(string name, decimal targetAmount)
+
+    public SavingsGoal(string name, decimal targetAmount, Guid userId)
     {
-        Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentException("Goal name cannot be empty.");
-        TargetAmount = targetAmount > 0 ? targetAmount : throw new ArgumentException("Target amount must be greater than zero.");
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name cannot be empty.");
+        if (targetAmount <= 0) throw new ArgumentException("Target amount must be greater than zero.");
+        if (userId == Guid.Empty) throw new ArgumentException("UserId is required.");
+
+        Id = Guid.NewGuid();
+        Name = name;
+        TargetAmount = targetAmount;
+        CurrentAmount = 0;
+        CreatedAt = DateTime.UtcNow;
+        UserId = userId;
     }
+
 
     public void AddDeposit(decimal amount)
     {

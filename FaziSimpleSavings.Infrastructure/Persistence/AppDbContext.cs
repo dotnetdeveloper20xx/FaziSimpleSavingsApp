@@ -35,6 +35,14 @@ public class AppDbContext : DbContext, IAppDbContext
             .HasOne(ur => ur.Role)
             .WithMany(r => r.UserRoles)
             .HasForeignKey(ur => ur.RoleId);
+
+        modelBuilder.Entity<SavingsGoal>()
+    .HasOne(g => g.User)
+    .WithMany()
+    .HasForeignKey(g => g.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
     }
 
 

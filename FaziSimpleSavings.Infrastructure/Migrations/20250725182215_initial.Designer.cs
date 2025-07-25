@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FaziSimpleSavings.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250725170605_AddRolesAndUserRoles")]
-    partial class AddRolesAndUserRoles
+    [Migration("20250725182215_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,7 +123,12 @@ namespace FaziSimpleSavings.Infrastructure.Migrations
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SavingsGoals");
                 });
@@ -208,6 +213,17 @@ namespace FaziSimpleSavings.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("FaziSimpleSavings.Core.Entities.SavingsGoal", b =>
+                {
+                    b.HasOne("FaziSimpleSavings.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UserRole", b =>

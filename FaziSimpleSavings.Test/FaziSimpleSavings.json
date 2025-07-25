@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "FaziSimpleSavings API",
+    "_postman_id": "3beef80d-1c53-45b3-9cda-zzzzzzzzzzzz",
+    "description": "Test suite for user authentication and savings goal features",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password\"\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7118/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "7118",
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "Login User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password\"\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7118/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "7118",
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Create Savings Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Vacation Fund\",\n  \"targetAmount\": 1000\n}"
+        },
+        "url": {
+          "raw": "https://localhost:7118/api/savingsgoals",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "7118",
+          "path": ["api", "savingsgoals"]
+        }
+      }
+    },
+    {
+      "name": "Get User Savings Goals",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+        ],
+        "url": {
+          "raw": "https://localhost:7118/api/savingsgoals",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "7118",
+          "path": ["api", "savingsgoals"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwtToken",
+      "value": ""
+    }
+  ]
+}
