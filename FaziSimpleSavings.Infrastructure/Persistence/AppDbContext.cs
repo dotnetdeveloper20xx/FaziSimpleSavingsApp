@@ -1,0 +1,17 @@
+﻿using Application.Interfaces;
+using FaziSimpleSavings.Core.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Persistence;
+
+public class AppDbContext : DbContext, IAppDbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<SavingsGoal> SavingsGoals => Set<SavingsGoal>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<RecurringDeposit> RecurringDeposits => Set<RecurringDeposit>();
+    public DbSet<GoalCategory> GoalCategories => Set<GoalCategory>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+}

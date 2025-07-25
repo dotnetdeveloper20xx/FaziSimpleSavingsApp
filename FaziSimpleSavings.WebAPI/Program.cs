@@ -1,8 +1,39 @@
+using Application.Interfaces;
+using FluentValidation;
+using Infrastructure.Authentication;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Register Application Layer
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(Assembly.Load("FaziSimpleSavings.Application")));
+
+builder.Services.AddValidatorsFromAssembly(Assembly.Load("FaziSimpleSavings.Application"));
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(Application.Behaviors.ValidationBehavior<,>));
+
+// Register Infrastructure DbContext
+builder.Services.AddDbContext<IAppDbContext, Infrastructure.Persistence.AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Or UseInMemory/UseNpgsql
+
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+
+
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+
+
+
+
+
+
+
 
 var app = builder.Build();
 
