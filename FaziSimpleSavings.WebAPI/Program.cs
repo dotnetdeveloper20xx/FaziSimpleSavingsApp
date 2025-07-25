@@ -11,17 +11,24 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register Application Layer
+// ---------------------------
+// Application Layer Setup
+// ---------------------------
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.Load("FaziSimpleSavings.Application")));
 
 builder.Services.AddValidatorsFromAssembly(Assembly.Load("FaziSimpleSavings.Application"));
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(Application.Behaviors.ValidationBehavior<,>));
 
-// Register Infrastructure DbContext
-builder.Services.AddDbContext<IAppDbContext, Infrastructure.Persistence.AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Or UseInMemory/UseNpgsql
+// ---------------------------
+// Infrastructure & DbContext
+// ---------------------------
+builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// ---------------------------
+// Authentication & Authorization
+// ---------------------------
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 builder.Services.AddAuthentication("Bearer")
@@ -42,12 +49,19 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
+// ---------------------------
+// Add Controllers (Required)
+// ---------------------------
+builder.Services.AddControllers();
+
+// ---------------------------
+// Swagger Configuration with JWT
+// ---------------------------
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "FaziSimpleSavings API", Version = "v1" });
 
-    //Add JWT Bearer auth to Swagger
     c.AddSecurityDefinition("Bearer", new()
     {
         Name = "Authorization",
@@ -74,27 +88,21 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-
-
-
-
-
-
-
-
-
 var app = builder.Build();
 
-
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// ---------------------------
+// Run Database Migrations and Seed Data
+// ---------------------------
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate(); // ensure DB is created
+    await SeedData.SeedAsync(dbContext); // seed initial data
 }
 
+// ---------------------------
+// HTTP Request Pipeline
+// ---------------------------
 app.UseHttpsRedirection();
 
 app.UseSwagger();
@@ -106,13 +114,6 @@ app.UseSwaggerUI(c =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Run seeding logic
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate(); // ensure schema is applied
-    await SeedData.SeedAsync(dbContext); // run seeding
-}
+app.MapControllers(); // required to route attribute-based APIs
 
 app.Run();
-
