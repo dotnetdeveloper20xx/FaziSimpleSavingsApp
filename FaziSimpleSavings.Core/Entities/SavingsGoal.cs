@@ -27,14 +27,19 @@ public class SavingsGoal
         UserId = userId;
     }
 
-
     public void AddDeposit(decimal amount)
     {
-        if (amount <= 0)
-            throw new ArgumentException("Deposit amount must be greater than zero.");
+        if (amount <= 0) throw new ArgumentException("Deposit amount must be greater than zero.");
 
-        CurrentAmount = Math.Min(CurrentAmount + amount, TargetAmount);
+        CurrentAmount += amount;
+
+        if (CurrentAmount > TargetAmount)
+        {
+            CurrentAmount = TargetAmount;
+        }
     }
+
+
 
     public bool IsGoalAchieved() => CurrentAmount >= TargetAmount;
 }

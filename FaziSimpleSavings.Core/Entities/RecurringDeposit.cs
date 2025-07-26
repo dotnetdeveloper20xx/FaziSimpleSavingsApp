@@ -1,29 +1,37 @@
-﻿#nullable enable
-
-namespace FaziSimpleSavings.Core.Entities;
-
-public class RecurringDeposit
+﻿public class RecurringDeposit
 {
-    public Guid Id { get; private set; } = Guid.NewGuid();
+    public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
     public Guid GoalId { get; private set; }
     public decimal Amount { get; private set; }
-    public string Frequency { get; private set; }  // Could be an enum if standardized
+    public string Frequency { get; private set; } // "Weekly", "Monthly"
     public DateTime NextDueDate { get; private set; }
-    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; private set; }
 
     public RecurringDeposit(Guid userId, Guid goalId, decimal amount, string frequency, DateTime nextDueDate)
     {
-        UserId = userId != Guid.Empty ? userId : throw new ArgumentException("User ID cannot be empty.");
-        GoalId = goalId != Guid.Empty ? goalId : throw new ArgumentException("Goal ID cannot be empty.");
-        Amount = amount > 0 ? amount : throw new ArgumentException("Amount must be greater than zero.");
-        Frequency = !string.IsNullOrWhiteSpace(frequency) ? frequency : throw new ArgumentException("Frequency cannot be empty.");
-        NextDueDate = nextDueDate > DateTime.UtcNow ? nextDueDate : throw new ArgumentException("Next due date must be in the future.");
+        if (userId == Guid.Empty) throw new ArgumentException("User ID cannot be empty.");
+        if (goalId == Guid.Empty) throw new ArgumentException("Goal ID cannot be empty.");
+        if (amount <= 0) throw new ArgumentException("Amount must be greater than zero.");
+        if (string.IsNullOrWhiteSpace(frequency)) throw new ArgumentException("Frequency cannot be empty.");
+        if (nextDueDate < DateTime.UtcNow) throw new ArgumentException("Next due date must be in the future.");
+
+        Id = Guid.NewGuid();
+        UserId = userId;
+        GoalId = goalId;
+        Amount = amount;
+        Frequency = frequency;
+        NextDueDate = nextDueDate;
+        CreatedAt = DateTime.UtcNow;
     }
 
-    public void UpdateNextDueDate(DateTime newDueDate)
+    public void UpdateNextDueDate()
     {
-        if (newDueDate <= DateTime.UtcNow) throw new ArgumentException("New due date must be in the future.");
-        NextDueDate = newDueDate;
+        NextDueDate = Frequency switch
+        {
+            "Weekly" => NextDueDate.AddDays(7),
+            "Monthly" => NextDueDate.AddMonths(1),
+            _ => throw new InvalidOperationException("Unsupported frequency: " + Frequency)
+        };
     }
 }
