@@ -1,30 +1,32 @@
-﻿using System;
+﻿
 using Application.Interfaces;
 using FaziSimpleSavings.Application.RecurringDeposits.Queries;
 using Infrastructure.Persistence;
 using MediatR;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-[assembly: FunctionsStartup(typeof(FaziSimpleSavings.AzureFunctions.Startup))]
-
-namespace FaziSimpleSavings.AzureFunctions
-{
-    public class Startup : FunctionsStartup
+var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureServices(services =>
     {
-        public override void Configure(IFunctionsHostBuilder builder)
-        {
-            // Connection string from local.settings.json or Azure App Settings
-            var configuration = builder.GetContext().Configuration;
-            var connectionString = configuration["SqlConnectionString"];
+        // Connection string from environment or settings
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("local.settings.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
 
-            // Inject DbContext
-            builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+        var connectionString = config["SqlConnectionString"];
 
-            // Add MediatR handlers
-            builder.Services.AddMediatR(typeof(GetDueRecurringDepositsQuery).Assembly);
-        }
-    }
-}
+        // Register services
+        services.AddDbContext<IAppDbContext, AppDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        services.AddMediatR(typeof(GetDueRecurringDepositsQuery).Assembly);
+    })
+    .Build();
+
+host.Run();

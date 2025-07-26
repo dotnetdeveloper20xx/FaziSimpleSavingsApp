@@ -1,7 +1,9 @@
 using System;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+
+
 
 namespace FaziSimpleSavings.AzureFunctions
 {
