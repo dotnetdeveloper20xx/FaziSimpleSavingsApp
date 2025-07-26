@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaziSimpleSavings.WebAPI", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaziSimpleSavings.Test", "FaziSimpleSavings.Test\FaziSimpleSavings.Test.csproj", "{C20A3C88-22E7-4225-AADF-A3BD648C41F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaziSimpleSavings.AzureFunctions", "FaziSimpleSavings.AzureFunctions\FaziSimpleSavings.AzureFunctions.csproj", "{8A844255-8579-451C-8EC8-6C2F3D1DC2C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C20A3C88-22E7-4225-AADF-A3BD648C41F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A844255-8579-451C-8EC8-6C2F3D1DC2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A844255-8579-451C-8EC8-6C2F3D1DC2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A844255-8579-451C-8EC8-6C2F3D1DC2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A844255-8579-451C-8EC8-6C2F3D1DC2C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
