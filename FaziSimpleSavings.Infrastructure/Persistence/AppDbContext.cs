@@ -13,8 +13,7 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<RecurringDeposit> RecurringDeposits => Set<RecurringDeposit>();
     public DbSet<GoalCategory> GoalCategories => Set<GoalCategory>();
-    public DbSet<Notification> Notifications => Set<Notification>();
-
+    public DbSet<Notification> Notifications { get; set; }
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<UserRole> UserRoles => Set<UserRole>();
 
