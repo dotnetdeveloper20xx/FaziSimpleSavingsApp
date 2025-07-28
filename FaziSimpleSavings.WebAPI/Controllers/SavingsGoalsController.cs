@@ -6,6 +6,7 @@ using API.Common.Helpers;
 using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
 using Application.Features.SavingsGoals.Queries.GetUserGoals;
 using Application.Transactions.Commands.CreateManualTransaction;
+using Application.SavingsGoals.Queries.GetGoalProgress;
 
 namespace API.Controllers;
 
@@ -40,6 +41,13 @@ public class SavingsGoalsController : ControllerBase
         return Ok(goals);
     }
 
+    [HttpGet("progress")]
+    public async Task<IActionResult> GetGoalProgress()
+    {
+        var userId = UserContextHelper.GetUserId(User);
+        var result = await _mediator.Send(new GetGoalProgressQuery(userId));
+        return Ok(result);
+    }
 
     [HttpPost("{goalId}/deposit")]
     public async Task<IActionResult> DepositToGoal(Guid goalId, [FromBody] decimal amount)
