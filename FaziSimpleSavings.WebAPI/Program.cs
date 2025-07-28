@@ -103,6 +103,8 @@ using (var scope = app.Services.CreateScope())
     await SeedData.SeedAsync(dbContext); // seed initial data
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 // ---------------------------
 // HTTP Request Pipeline
 // ---------------------------

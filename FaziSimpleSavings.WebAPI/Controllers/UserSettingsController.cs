@@ -1,11 +1,12 @@
 ﻿using API.Common.Helpers;
 using Application.UserSettings.Commands.UpdateUserSettings;
 using Application.UserSettings.Queries.GetUserSettings;
+using FaziSimpleSavings.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers;
+namespace WebApi.Controllers;
 
 [Authorize]
 [ApiController]
@@ -24,7 +25,8 @@ public class UserSettingsController : ControllerBase
     {
         var userId = UserContextHelper.GetUserId(User);
         var result = await _mediator.Send(new GetUserSettingsQuery(userId));
-        return Ok(result);
+
+        return Ok(ApiResponse<UserSettingsDto>.Ok(result, "User settings retrieved"));
     }
 
     [HttpPut]
@@ -33,9 +35,7 @@ public class UserSettingsController : ControllerBase
         var userId = UserContextHelper.GetUserId(User);
         command = command with { UserId = userId };
 
-        var result = await _mediator.Send(command);
-        return result
-            ? Ok(new { message = "User settings updated successfully." })
-            : BadRequest(new { message = "Update failed." });
+        await _mediator.Send(command);
+        return Ok(ApiResponse<string>.Ok(null, "User settings updated successfully"));
     }
 }

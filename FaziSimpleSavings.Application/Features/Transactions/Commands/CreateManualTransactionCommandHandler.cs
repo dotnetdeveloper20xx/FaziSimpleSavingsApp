@@ -1,13 +1,12 @@
-﻿
-using Application.Common.Security;
+﻿using Application.Common.Security;
 using Application.Interfaces;
-
+using FaziSimpleSavings.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Transactions.Commands.CreateManualTransaction;
 
-public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManualTransactionCommand, bool>
+public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManualTransactionCommand, Unit>
 {
     private readonly IAppDbContext _context;
     private readonly IOwnershipValidator _ownershipValidator;
@@ -18,17 +17,18 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
         _ownershipValidator = ownershipValidator;
     }
 
-    public async Task<bool> Handle(CreateManualTransactionCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateManualTransactionCommand request, CancellationToken cancellationToken)
     {
         // Ownership check
-        if (!await _ownershipValidator.UserOwnsGoal(request.UserId, request.GoalId))
-            return false;
+        var ownsGoal = await _ownershipValidator.UserOwnsGoal(request.UserId, request.GoalId);
+        if (!ownsGoal)
+            throw new NotFoundException("SavingsGoal", request.GoalId);
 
         var goal = await _context.SavingsGoals
             .FirstOrDefaultAsync(g => g.Id == request.GoalId, cancellationToken);
 
         if (goal == null)
-            return false;
+            throw new NotFoundException("SavingsGoal", request.GoalId);
 
         goal.AddDeposit(request.Amount);
 
@@ -36,6 +36,7 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
         _context.Transactions.Add(transaction);
 
         await _context.SaveChangesAsync(cancellationToken);
-        return true;
+
+        return Unit.Value;
     }
 }

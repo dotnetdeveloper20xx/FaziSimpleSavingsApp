@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using API.Common.Helpers;
 using FaziSimpleSavings.Application.Notifications.Queries;
+using FaziSimpleSavings.Application.Common.Exceptions;
+using FaziSimpleSavings.Application.Dtos;
 
-namespace API.Controllers;
+namespace FaziSimpleSavings.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -23,19 +25,19 @@ public class NotificationsController : ControllerBase
     public async Task<IActionResult> GetUserNotifications()
     {
         var userId = UserContextHelper.GetUserId(User);
-        var notifications = await _mediator.Send(new GetUserNotificationsQuery(userId));
-        return Ok(notifications);
+
+        var result = await _mediator.Send(new GetUserNotificationsQuery(userId));
+        return Ok(ApiResponse<List<NotificationDto>>.Ok(result, "Notifications retrieved"));
     }
 
     [HttpPost("{id}/mark-as-read")]
     public async Task<IActionResult> MarkAsRead(Guid id)
     {
         var userId = UserContextHelper.GetUserId(User);
-        var result = await _mediator.Send(new MarkNotificationAsReadCommand(id, userId));
 
-        if (!result)
-            return NotFound();
+        await _mediator.Send(new MarkNotificationAsReadCommand(id, userId));
 
-        return NoContent();
+        return Ok(ApiResponse<string>.Ok(data: null, $"Notification {id} marked as read"));
     }
 }
+

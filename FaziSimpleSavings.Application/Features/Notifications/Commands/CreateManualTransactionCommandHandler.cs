@@ -1,35 +1,33 @@
 ﻿using Application.Common.Security;
 using Application.Interfaces;
 using Application.Transactions.Commands.CreateManualTransaction;
-using FaziSimpleSavings.Application.Notifications.Commands;
+using FaziSimpleSavings.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManualTransactionCommand, bool>
+namespace Application.Features.Transactions.Commands;
+public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManualTransactionCommand, Unit>
 {
     private readonly IAppDbContext _context;
     private readonly IOwnershipValidator _ownershipValidator;
-    private readonly IMediator _mediator; 
 
-    public CreateManualTransactionCommandHandler(
-        IAppDbContext context,
-        IOwnershipValidator ownershipValidator,
-        IMediator mediator)
+    public CreateManualTransactionCommandHandler(IAppDbContext context, IOwnershipValidator ownershipValidator)
     {
         _context = context;
         _ownershipValidator = ownershipValidator;
-        _mediator = mediator;
     }
 
-    public async Task<bool> Handle(CreateManualTransactionCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateManualTransactionCommand request, CancellationToken cancellationToken)
     {
-        if (!await _ownershipValidator.UserOwnsGoal(request.UserId, request.GoalId))
-            return false;
+        var ownsGoal = await _ownershipValidator.UserOwnsGoal(request.UserId, request.GoalId);
+        if (!ownsGoal)
+            throw new NotFoundException("SavingsGoal", request.GoalId);
 
         var goal = await _context.SavingsGoals
             .FirstOrDefaultAsync(g => g.Id == request.GoalId, cancellationToken);
+
         if (goal == null)
-            return false;
+            throw new NotFoundException("SavingsGoal", request.GoalId);
 
         goal.AddDeposit(request.Amount);
 
@@ -37,11 +35,7 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
         _context.Transactions.Add(transaction);
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        // ✅ Send notification after successful save
-        var message = $"You deposited £{request.Amount} to your goal \"{goal.Name}\".";
-        await _mediator.Send(new CreateNotificationCommand(request.UserId, message));
-
-        return true;
+        return Unit.Value;
     }
 }
+

@@ -1,14 +1,16 @@
-﻿using Application.Transactions.Queries.GetTransactionsByGoal;
+﻿using API.Common.Helpers;
+using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
+using Application.Features.SavingsGoals.Queries.GetUserGoals;
+using Application.SavingsGoals.Queries.GetGoalProgress;
+using Application.Transactions.Commands.CreateManualTransaction;
+using Application.Transactions.Queries.GetTransactionsByGoal;
+using FaziSimpleSavings.Application.Common.Exceptions;
+using FaziSimpleSavings.Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using API.Common.Helpers;
-using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
-using Application.Features.SavingsGoals.Queries.GetUserGoals;
-using Application.Transactions.Commands.CreateManualTransaction;
-using Application.SavingsGoals.Queries.GetGoalProgress;
 
-namespace API.Controllers;
+namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,13 +26,12 @@ public class SavingsGoalsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateGoal([FromBody] CreateSavingsGoalCommand command)
-    {
-        command.UserId = UserContextHelper.GetUserId(User);
+    {        
+        var userId = UserContextHelper.GetUserId(User);
+        command = command with { UserId = userId };
+        var goalId = await _mediator.Send(command);
 
-        var success = await _mediator.Send(command);
-        return success
-            ? Ok(new { message = "Goal created successfully." })
-            : BadRequest(new { message = "Goal creation failed." });
+        return Ok(ApiResponse<Guid>.Ok(goalId, "Goal created successfully"));
     }
 
     [HttpGet]
@@ -38,7 +39,8 @@ public class SavingsGoalsController : ControllerBase
     {
         var userId = UserContextHelper.GetUserId(User);
         var goals = await _mediator.Send(new GetUserGoalsQuery(userId));
-        return Ok(goals);
+
+        return Ok(ApiResponse<List<SavingsGoalDto>>.Ok(goals, "User goals retrieved"));
     }
 
     [HttpGet("progress")]
@@ -46,23 +48,20 @@ public class SavingsGoalsController : ControllerBase
     {
         var userId = UserContextHelper.GetUserId(User);
         var result = await _mediator.Send(new GetGoalProgressQuery(userId));
-        return Ok(result);
+
+        return Ok(ApiResponse<List<GoalProgressDto>>.Ok(result, "Goal progress calculated"));
+
     }
 
     [HttpPost("{goalId}/deposit")]
     public async Task<IActionResult> DepositToGoal(Guid goalId, [FromBody] decimal amount)
     {
-        if (amount <= 0)
-            return BadRequest("Amount must be greater than 0.");
-
+        // Amount validation should be handled by FluentValidation instead
         var userId = UserContextHelper.GetUserId(User);
-
         var command = new CreateManualTransactionCommand(userId, goalId, amount);
-        var result = await _mediator.Send(command);
 
-        return result
-            ? Ok(new { message = $"£{amount} was deposited successfully." })
-            : NotFound("Goal not found or access denied.");
+        await _mediator.Send(command);
+        return Ok(ApiResponse<string>.Ok(null, $"£{amount} was deposited successfully"));
     }
 
     [HttpGet("{goalId}/transactions")]
@@ -70,6 +69,7 @@ public class SavingsGoalsController : ControllerBase
     {
         var userId = UserContextHelper.GetUserId(User);
         var result = await _mediator.Send(new GetTransactionsByGoalQuery(userId, goalId));
-        return Ok(result);
+
+        return Ok(ApiResponse<List<TransactionDto>>.Ok(result, "Goal transactions retrieved"));
     }
 }

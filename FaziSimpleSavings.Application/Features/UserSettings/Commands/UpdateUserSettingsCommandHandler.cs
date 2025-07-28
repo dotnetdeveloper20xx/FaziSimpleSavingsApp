@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.UserSettings.Commands.UpdateUserSettings;
 
-public class UpdateUserSettingsCommandHandler : IRequestHandler<UpdateUserSettingsCommand, bool>
+public class UpdateUserSettingsCommandHandler : IRequestHandler<UpdateUserSettingsCommand>
 {
     private readonly IAppDbContext _context;
 
@@ -13,13 +13,14 @@ public class UpdateUserSettingsCommandHandler : IRequestHandler<UpdateUserSettin
         _context = context;
     }
 
-    public async Task<bool> Handle(UpdateUserSettingsCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateUserSettingsCommand request, CancellationToken cancellationToken)
     {
         var settings = await _context.UserSettings
             .FirstOrDefaultAsync(x => x.UserId == request.UserId, cancellationToken);
 
         if (settings == null)
         {
+            // Optional: you can choose to throw or create new settings as below
             settings = new FaziSimpleSavings.Core.Entities.UserSettings(request.UserId, request.Currency, request.ReceiveEmailNotifications);
             _context.UserSettings.Add(settings);
         }
@@ -28,7 +29,12 @@ public class UpdateUserSettingsCommandHandler : IRequestHandler<UpdateUserSettin
             settings.Update(request.Currency, request.ReceiveEmailNotifications);
         }
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
-        return result > 0;
+        await _context.SaveChangesAsync(cancellationToken);
+        return Unit.Value;
+    }
+
+    Task IRequestHandler<UpdateUserSettingsCommand>.Handle(UpdateUserSettingsCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

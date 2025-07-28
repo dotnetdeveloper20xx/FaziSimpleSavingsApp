@@ -1,9 +1,13 @@
 ﻿using Application.SavingsGoals.Commands.CreateSavingsGoal;
-using FluentAssertions;
-using Moq;
 using Application.Common.Security;
-using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
 using FaziSimpleSavings.Test.TestUtilities;
+using FluentAssertions;
+using FluentValidation;
+using Xunit;
+using Moq;
+using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
+
+namespace Application.UnitTests.SavingsGoals.Commands;
 
 public class CreateSavingsGoalCommandHandlerTests : BaseTest
 {
@@ -15,12 +19,7 @@ public class CreateSavingsGoalCommandHandlerTests : BaseTest
         Context.Users.Add(user);
         await Context.SaveChangesAsync();
 
-        var command = new CreateSavingsGoalCommand
-        {
-            UserId = user.Id,
-            Name = "Emergency Fund",
-            TargetAmount = 1000m
-        };
+        var command = new CreateSavingsGoalCommand(user.Id, "Emergency Fund", 1000m);
 
         var ownershipValidatorMock = new Mock<IOwnershipValidator>();
         var handler = new CreateSavingsGoalCommandHandler(Context, ownershipValidatorMock.Object);
@@ -29,24 +28,15 @@ public class CreateSavingsGoalCommandHandlerTests : BaseTest
         var result = await handler.Handle(command, default);
 
         // Assert
-        result.Should().BeTrue();
+        result.Should().NotBeEmpty(); // Guid should not be Guid.Empty
         Context.SavingsGoals.Should().ContainSingle(g => g.Name == "Emergency Fund" && g.UserId == user.Id);
     }
 
     [Fact]
-    public async Task Should_Not_Create_Goal_When_Amount_Is_Zero()
+    public void Should_Fail_Validation_When_TargetAmount_Is_Zero()
     {
         // Arrange
-        var user = TestUserFactory.Create();
-        Context.Users.Add(user);
-        await Context.SaveChangesAsync();
-
-        var command = new CreateSavingsGoalCommand
-        {
-            UserId = user.Id,
-            Name = "Invalid Goal",
-            TargetAmount = 0
-        };
+        var command = new CreateSavingsGoalCommand(Guid.NewGuid(), "Invalid Goal", 0);
 
         var validator = new CreateSavingsGoalCommandValidator();
 
@@ -58,3 +48,4 @@ public class CreateSavingsGoalCommandHandlerTests : BaseTest
         result.Errors.Should().Contain(e => e.PropertyName == "TargetAmount");
     }
 }
+
