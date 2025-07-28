@@ -1,9 +1,11 @@
 ﻿using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
 using Application.Features.SavingsGoals.Queries.GetUserGoals;
+using Application.Transactions.Queries.GetTransactionsByGoal;
 using FaziSimpleSavings.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FaziSimpleSavings.WebAPI.Controllers;
 
@@ -35,5 +37,17 @@ public class SavingsGoalsController : ControllerBase
         var userId = this.GetUserId();
         var goals = await _mediator.Send(new GetUserGoalsQuery(userId));
         return Ok(goals);
+    }
+
+    [HttpGet("{goalId}/transactions")]
+    public async Task<IActionResult> GetTransactions(Guid goalId)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        var result = await _mediator.Send(new GetTransactionsByGoalQuery(userId, goalId));
+
+        return Ok(result);
     }
 }
