@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿
+using Application.Notifications.Commands.MarkNotificationAsRead;
 using FaziSimpleSavings.Application.Notifications.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +30,21 @@ namespace FaziSimpleSavings.API.Controllers
 
             var notifications = await _mediator.Send(new GetUserNotificationsQuery(parsedUserId));
             return Ok(notifications);
+        }
+
+        [HttpPost("{id}/mark-as-read")]
+        public async Task<IActionResult> MarkAsRead(Guid id)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _mediator.Send(new MarkNotificationAsReadCommand(id, userId));
+
+            if (!result)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }

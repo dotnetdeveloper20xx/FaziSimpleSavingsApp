@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FaziSimpleSavings.Application.RecurringDeposits.Commands;
+using FaziSimpleSavings.Application.RecurringDeposits.Queries;
 using MediatR;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
