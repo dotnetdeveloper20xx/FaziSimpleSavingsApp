@@ -1,31 +1,34 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿
+using Application.Common.Security;
 using Application.Interfaces;
+
 using FaziSimpleSavings.Application.Notifications.Commands;
 using FaziSimpleSavings.Core.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace FaziSimpleSavings.Application.Notifications.Handlers
+namespace Application.Notifications.Commands.CreateNotification;
+
+public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, Guid>
 {
-    public class CreateNotificationCommandHandler : IRequestHandler<CreateNotificationCommand, Guid>
+    private readonly IAppDbContext _context;
+    private readonly IOwnershipValidator _ownershipValidator;
+
+    public CreateNotificationCommandHandler(IAppDbContext context, IOwnershipValidator ownershipValidator)
     {
-        private readonly IAppDbContext _context;
+        _context = context;
+        _ownershipValidator = ownershipValidator;
+    }
 
-        public CreateNotificationCommandHandler(IAppDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<Guid> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
+    {
+        // Optional: Validate user owns related resource (e.g., goal)
+        // This is only necessary if you add GoalId in the request in the future
 
-        public async Task<Guid> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
-        {
-            var notification = new Notification(request.UserId, request.Message);
-            await _context.Notifications.AddAsync(notification, cancellationToken);
+        // Create and persist the notification
+        var notification = new Notification(request.UserId, request.Message);
+        await _context.Notifications.AddAsync(notification, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return notification.Id;
-        }
+        return notification.Id;
     }
 }

@@ -1,8 +1,9 @@
-﻿using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
-using FaziSimpleSavings.Test.TestUtilities;
+﻿using Application.SavingsGoals.Commands.CreateSavingsGoal;
 using FluentAssertions;
-
-namespace FaziSimpleSavings.Test.Application.SavingsGoals.Commands;
+using Moq;
+using Application.Common.Security;
+using Application.Features.SavingsGoals.Commands.CreateSavingsGoal;
+using FaziSimpleSavings.Test.TestUtilities;
 
 public class CreateSavingsGoalCommandHandlerTests : BaseTest
 {
@@ -21,7 +22,8 @@ public class CreateSavingsGoalCommandHandlerTests : BaseTest
             TargetAmount = 1000m
         };
 
-        var handler = new CreateSavingsGoalCommandHandler(Context);
+        var ownershipValidatorMock = new Mock<IOwnershipValidator>();
+        var handler = new CreateSavingsGoalCommandHandler(Context, ownershipValidatorMock.Object);
 
         // Act
         var result = await handler.Handle(command, default);
