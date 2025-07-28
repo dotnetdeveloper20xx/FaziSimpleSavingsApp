@@ -34,4 +34,10 @@
             _ => throw new InvalidOperationException("Unsupported frequency: " + Frequency)
         };
     }
+
+    public void ForceSetNextDueDate(DateTime newDueDate)
+    {       
+        NextDueDate = newDueDate;
+    }
+
 }

@@ -1,4 +1,7 @@
-﻿public class UserSettings
+﻿
+namespace FaziSimpleSavings.Core.Entities;
+
+public class UserSettings
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
@@ -11,6 +14,14 @@
         if (string.IsNullOrWhiteSpace(currency)) throw new ArgumentException("Currency cannot be empty.");
 
         UserId = userId;
+        Currency = currency;
+        ReceiveEmailNotifications = receiveEmailNotifications;
+    }
+
+    public void Update(string currency, bool receiveEmailNotifications)
+    {
+        if (string.IsNullOrWhiteSpace(currency)) throw new ArgumentException("Currency cannot be empty.");
+
         Currency = currency;
         ReceiveEmailNotifications = receiveEmailNotifications;
     }

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Security;
+using Application.Interfaces;
 using FluentValidation;
 using Infrastructure.Authentication;
 using Infrastructure.Persistence;
@@ -30,6 +31,8 @@ builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options =>
 // Authentication & Authorization
 // ---------------------------
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+builder.Services.AddScoped<IOwnershipValidator, OwnershipValidator>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

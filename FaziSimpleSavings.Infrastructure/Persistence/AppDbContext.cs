@@ -16,14 +16,14 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<UserRole> UserRoles => Set<UserRole>();
-
+    public DbSet<UserSettings> UserSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<UserRole>()
-            .HasKey(ur => new { ur.UserId, ur.RoleId });
+         .HasKey(ur => new { ur.UserId, ur.RoleId });
 
         modelBuilder.Entity<UserRole>()
             .HasOne(ur => ur.User)
@@ -36,10 +36,26 @@ public class AppDbContext : DbContext, IAppDbContext
             .HasForeignKey(ur => ur.RoleId);
 
         modelBuilder.Entity<SavingsGoal>()
-    .HasOne(g => g.User)
-    .WithMany()
-    .HasForeignKey(g => g.UserId)
-    .OnDelete(DeleteBehavior.Cascade);
+                    .Property(g => g.TargetAmount)
+                    .HasPrecision(18, 2);
+
+        modelBuilder.Entity<SavingsGoal>()
+                    .Property(g => g.CurrentAmount)
+                    .HasPrecision(18, 2);
+
+        modelBuilder.Entity<RecurringDeposit>()
+                    .Property(rd => rd.Amount)
+                    .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Transaction>()
+                    .Property(t => t.Amount)
+                    .HasPrecision(18, 2);     
+
+        modelBuilder.Entity<SavingsGoal>()
+                    .HasOne(g => g.User)
+                    .WithMany()
+                    .HasForeignKey(g => g.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
 
     }

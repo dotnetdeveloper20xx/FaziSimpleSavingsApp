@@ -16,6 +16,8 @@ public class TestDbContext : DbContext, IAppDbContext
     public DbSet<GoalCategory> GoalCategories => Set<GoalCategory>();
     public DbSet<Notification> Notifications => Set<Notification>();
 
+    public DbSet<UserSettings> UserSettings => Set<UserSettings>();
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => base.SaveChangesAsync(cancellationToken);
 }

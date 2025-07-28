@@ -13,6 +13,7 @@ public interface IAppDbContext
     DbSet<RecurringDeposit> RecurringDeposits { get; }
     DbSet<GoalCategory> GoalCategories { get; }
     DbSet<Notification> Notifications { get; }
+    DbSet<FaziSimpleSavings.Core.Entities.UserSettings> UserSettings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
