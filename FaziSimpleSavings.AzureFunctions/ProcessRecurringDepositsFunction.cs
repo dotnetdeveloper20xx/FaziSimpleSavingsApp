@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Application.Notifications.Commands.SendOverdueDepositReminder;
+using Application.RecurringDeposits.Queries.GetOverdueRecurringDeposits;
 using FaziSimpleSavings.Application.RecurringDeposits.Commands;
 using FaziSimpleSavings.Application.RecurringDeposits.Queries;
 using MediatR;
@@ -26,6 +28,7 @@ namespace FaziSimpleSavings.AzureFunctions
 
             try
             {
+                // Step 1: Execute due recurring deposits (existing feature)
                 var deposits = await _mediator.Send(new GetDueRecurringDepositsQuery());
 
                 foreach (var deposit in deposits)
@@ -42,6 +45,23 @@ namespace FaziSimpleSavings.AzureFunctions
                         _logger.LogError(ex, $"Failed to process deposit {deposit.Id}");
                     }
                 }
+
+                // Step 2: Send overdue deposit reminders (new feature)
+                var now = DateTime.UtcNow;
+                var overdueDeposits = await _mediator.Send(new GetOverdueRecurringDepositsQuery(now));
+
+                foreach (var rd in overdueDeposits)
+                {
+                    try
+                    {
+                        await _mediator.Send(new SendOverdueDepositReminderCommand(rd.UserId, rd.GoalName, rd.Amount));
+                        _logger.LogInformation($"Overdue reminder sent for Goal '{rd.GoalName}' to user {rd.UserId}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Failed to send overdue reminder for deposit {rd.Id}");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -51,4 +71,5 @@ namespace FaziSimpleSavings.AzureFunctions
             _logger.LogInformation("Function execution completed.");
         }
     }
+
 }
