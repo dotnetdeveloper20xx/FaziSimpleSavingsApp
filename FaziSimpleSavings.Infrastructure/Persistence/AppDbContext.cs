@@ -8,14 +8,14 @@ public class AppDbContext : DbContext, IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<User> Users => Set<User>();
-    public DbSet<SavingsGoal> SavingsGoals => Set<SavingsGoal>();
-    public DbSet<Transaction> Transactions => Set<Transaction>();
-    public DbSet<RecurringDeposit> RecurringDeposits => Set<RecurringDeposit>();
-    public DbSet<GoalCategory> GoalCategories => Set<GoalCategory>();
+    public DbSet<User> Users { get; set; }
+    public DbSet<SavingsGoal> SavingsGoals { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<RecurringDeposit> RecurringDeposits { get; set; }
+    public DbSet<GoalCategory> GoalCategories { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Role> Roles => Set<Role>();
-    public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

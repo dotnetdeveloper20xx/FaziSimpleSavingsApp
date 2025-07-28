@@ -54,15 +54,16 @@ public class SavingsGoalsController : ControllerBase
     }
 
     [HttpPost("{goalId}/deposit")]
-    public async Task<IActionResult> DepositToGoal(Guid goalId, [FromBody] decimal amount)
+    public async Task<IActionResult> DepositToGoal(Guid goalId, [FromBody] DepositToGoalRequest request)
     {
-        // Amount validation should be handled by FluentValidation instead
         var userId = UserContextHelper.GetUserId(User);
-        var command = new CreateManualTransactionCommand(userId, goalId, amount);
+        var command = new CreateManualTransactionCommand(userId, goalId, request.Amount);
 
         await _mediator.Send(command);
-        return Ok(ApiResponse<string>.Ok(null, $"£{amount} was deposited successfully"));
+        return Ok(ApiResponse<string>.Ok(null, $"£{request.Amount} was deposited successfully"));
     }
+
+
 
     [HttpGet("{goalId}/transactions")]
     public async Task<IActionResult> GetTransactions(Guid goalId)

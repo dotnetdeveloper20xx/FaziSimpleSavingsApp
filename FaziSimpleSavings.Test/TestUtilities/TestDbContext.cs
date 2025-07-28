@@ -10,6 +10,8 @@ public class TestDbContext : DbContext, IAppDbContext
         : base(options) { }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
     public DbSet<SavingsGoal> SavingsGoals => Set<SavingsGoal>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<RecurringDeposit> RecurringDeposits => Set<RecurringDeposit>();

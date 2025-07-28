@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FaziSimpleSavings.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250728130812_initial")]
+    [Migration("20250728173100_initial")]
     partial class initial
     {
         /// <inheritdoc />

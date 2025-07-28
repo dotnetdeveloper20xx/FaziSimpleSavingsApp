@@ -8,6 +8,8 @@ namespace Application.Interfaces;
 public interface IAppDbContext
 {
     DbSet<User> Users { get; }
+    DbSet<Role> Roles { get; }
+    DbSet<UserRole> UserRoles { get; }
     DbSet<SavingsGoal> SavingsGoals { get; }
     DbSet<Transaction> Transactions { get; }
     DbSet<RecurringDeposit> RecurringDeposits { get; }

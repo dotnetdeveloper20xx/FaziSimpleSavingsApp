@@ -25,10 +25,11 @@ public static class SeedData
 
         // UserRoles
         context.UserRoles.AddRange(
-            new UserRole { User = adminUser, Role = roles.First(r => r.Name == "Admin") },
-            new UserRole { User = customerUser, Role = roles.First(r => r.Name == "Customer") },
-            new UserRole { User = extraUser, Role = roles.First(r => r.Name == "Customer") }
-        );
+             new UserRole(adminUser.Id, roles.First(r => r.Name == "Admin").Id),
+             new UserRole(customerUser.Id, roles.First(r => r.Name == "Customer").Id),
+             new UserRole(extraUser.Id, roles.First(r => r.Name == "Customer").Id)
+         );
+
 
         // UserSettings
         context.UserSettings.AddRange(
