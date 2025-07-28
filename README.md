@@ -1,3 +1,135 @@
+# 🚀 FaziSimpleSavings – Project Development Progress
+
+## 🌟 Project Vision
+**FaziSimpleSavings** is a personal finance application that helps users:
+- Set and track savings goals
+- Automate recurring deposits
+- Receive reminders and updates via notifications
+- View and manage savings progress through a secure, user-friendly interface
+
+The solution follows **Clean Architecture**, is cloud-native (Azure), and is built with **.NET**, **Angular**, **EF Core**, and **Azure Functions**.
+
+---
+
+## 📦 Key Features
+
+### ✅ User Management
+- JWT authentication
+- Registration, login
+- Profile personalization
+
+### ✅ Savings Goals
+- Create and track goals
+- Associate deposits and transactions
+- Mark goals as achieved
+
+### ✅ Transactions
+- Track deposit history per goal
+- Automatically generated via recurring deposits
+
+### ✅ Recurring Deposits
+- Schedule weekly/monthly savings
+- Executed via Azure Timer Trigger Function
+- Deposits update goals and create transactions
+
+### ✅ Notifications
+- Created on deposit success
+- Fetched via secure API
+- To be displayed in frontend (in progress)
+
+---
+
+## 🏗️ Architecture Overview
+
+- **Clean Architecture** (Domain, Application, Infrastructure, API, AzureFunctions)
+- **CQRS** with MediatR (Commands and Queries)
+- **Entity Validation** in constructors
+- **EF Core** for persistence
+- **Azure Functions (Isolated Worker)** for background automation
+
+---
+
+## 🛠️ Technologies
+
+| Area             | Stack                                    |
+|------------------|------------------------------------------|
+| Backend          | ASP.NET Core 8 / 9, MediatR, EF Core     |
+| Background Jobs  | Azure Functions (Isolated Worker)        |
+| Frontend         | Angular (in progress)                    |
+| Security         | JWT Authentication                       |
+| Database         | SQL Server + CosmosDB (future optional)  |
+| Tools            | Postman, Swagger (pending), GitHub, VS   |
+
+---
+
+## 📈 Completed Development Milestones
+
+### 🔹 Domain Layer
+- Implemented `User`, `SavingsGoal`, `Transaction`, `RecurringDeposit`, `Notification`, `GoalCategory`, `UserSettings`
+- Business logic methods: `AddDeposit()`, `IsGoalAchieved()`, etc.
+
+### 🔹 Infrastructure
+- AppDbContext with `DbSet<>` for all entities
+- `IAppDbContext` interface for DI abstraction
+
+### 🔹 Application Layer
+- MediatR Commands & Queries:
+  - `CreateSavingsGoalCommand`
+  - `GetUserGoalsQuery`
+  - `ExecuteRecurringDepositCommand`
+  - `GetDueRecurringDepositsQuery`
+  - `CreateNotificationCommand`
+  - `GetUserNotificationsQuery`
+
+### 🔹 Azure Functions
+- Created `FaziSimpleSavings.AzureFunctions` (Isolated Worker, .NET 8)
+- `ProcessRecurringDepositsFunction` runs hourly
+- Executes due deposits and creates notifications
+
+### 🔹 API
+- `NotificationsController` with:
+  - `GET /api/notifications`
+- Reads UserId from `ClaimTypes.NameIdentifier`
+
+### 🔹 Postman Collection
+- Full collection generated:
+  - `POST /api/auth/login`
+  - `POST /api/goals`
+  - `GET /api/goals`
+  - `POST /api/recurringdeposits`
+  - `GET /api/notifications`
+- Token auto-captured using test script
+- Base URL: `https://localhost:7000`
+
+---
+
+## ⏭️ Next Priorities
+
+- [ ] `POST /api/notifications/{id}/mark-as-read`
+- [ ] Integrate notifications into Angular frontend
+- [ ] Create goal dashboard UI (progress bars, deposit history)
+- [ ] Add Swagger UI for full API documentation
+- [ ] Optional: add overdue/missed deposit reminders
+
+---
+
+## 📁 Project Folder Structure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # FaziSimpleSavings – Your Personal Savings Assistant
 
 ## What FaziSimpleSavings Will Do for You
