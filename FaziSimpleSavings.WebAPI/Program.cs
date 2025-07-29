@@ -91,7 +91,24 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactClient", policy =>
+    {
+        policy.WithOrigins("http://192.168.0.182:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // if using cookies or Authorization headers
+    });
+});
+
+
 var app = builder.Build();
+
+// Enable CORS
+app.UseCors("AllowReactClient");
+
 
 // ---------------------------
 // Run Database Migrations and Seed Data
