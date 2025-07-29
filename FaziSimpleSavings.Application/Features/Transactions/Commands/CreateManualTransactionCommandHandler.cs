@@ -1,13 +1,14 @@
-﻿using Application.Common.Security;
+﻿
+using Application.Common.Security;
 using Application.Interfaces;
+using Application.Transactions.Commands.CreateManualTransaction;
 using FaziSimpleSavings.Application.Common.Exceptions;
 using FaziSimpleSavings.Application.Notifications.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Application.Transactions.Commands.CreateManualTransaction;
-
+namespace Application.Features.Transactions.Commands.CreateManualTransaction;
 
 public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManualTransactionCommand, Unit>
 {
@@ -27,7 +28,7 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
 
     public async Task<Unit> Handle(CreateManualTransactionCommand request, CancellationToken cancellationToken)
     {
-        // Ownership check
+        // Ownership validation
         var ownsGoal = await _ownershipValidator.UserOwnsGoal(request.UserId, request.GoalId);
         if (!ownsGoal)
             throw new NotFoundException("SavingsGoal", request.GoalId);
@@ -38,6 +39,11 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
         if (goal == null)
             throw new NotFoundException("SavingsGoal", request.GoalId);
 
+        // Prevent deposit if goal already achieved
+        if (goal.IsGoalAchieved())
+            throw new InvalidOperationException("Goal already achieved. Cannot deposit further.");
+
+        // Add deposit
         goal.AddDeposit(request.Amount);
 
         var transaction = new Transaction(request.UserId, request.GoalId, request.Amount);
@@ -45,11 +51,17 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        // Create notification
-        var message = $"£{request.Amount} was manually deposited into your goal \"{goal.Name}\".";
-        await _mediator.Send(new CreateNotificationCommand(request.UserId, message), cancellationToken);
+        // Send deposit notification
+        var depositMessage = $"£{request.Amount} was manually deposited into your goal \"{goal.Name}\".";
+        await _mediator.Send(new CreateNotificationCommand(request.UserId, depositMessage), cancellationToken);
+
+        // Notify if the goal has just been completed
+        if (goal.IsGoalAchieved())
+        {
+            var achievedMessage = $"Target Achieved! Your goal \"{goal.Name}\" has been successfully completed.";
+            await _mediator.Send(new CreateNotificationCommand(request.UserId, achievedMessage), cancellationToken);
+        }
 
         return Unit.Value;
     }
 }
-

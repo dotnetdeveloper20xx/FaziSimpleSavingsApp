@@ -13,6 +13,12 @@ public class CreateSavingsGoalCommandHandler : IRequestHandler<CreateSavingsGoal
     private readonly IOwnershipValidator _ownershipValidator;
     private readonly IMediator _mediator;
 
+    public CreateSavingsGoalCommandHandler(IAppDbContext context, IOwnershipValidator @object)
+    {
+        Context = context;
+        Object = @object;
+    }
+
     public CreateSavingsGoalCommandHandler(
         IAppDbContext context,
         IOwnershipValidator ownershipValidator,
@@ -22,6 +28,9 @@ public class CreateSavingsGoalCommandHandler : IRequestHandler<CreateSavingsGoal
         _ownershipValidator = ownershipValidator;
         _mediator = mediator;
     }
+
+    public IAppDbContext Context { get; }
+    public IOwnershipValidator Object { get; }
 
     public async Task<Guid> Handle(CreateSavingsGoalCommand request, CancellationToken cancellationToken)
     {

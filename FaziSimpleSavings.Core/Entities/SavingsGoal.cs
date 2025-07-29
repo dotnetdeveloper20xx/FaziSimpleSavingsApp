@@ -39,7 +39,5 @@ public class SavingsGoal
         }
     }
 
-
-
     public bool IsGoalAchieved() => CurrentAmount >= TargetAmount;
 }
