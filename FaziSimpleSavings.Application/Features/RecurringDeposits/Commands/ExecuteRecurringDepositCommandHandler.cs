@@ -1,5 +1,4 @@
-﻿
-using Application.Common.Security;
+﻿using Application.Common.Security;
 using Application.Interfaces;
 using FaziSimpleSavings.Application.Notifications.Commands;
 using FaziSimpleSavings.Application.RecurringDeposits.Commands;
@@ -48,10 +47,16 @@ public class ExecuteRecurringDepositCommandHandler : IRequestHandler<ExecuteRecu
         recurring.UpdateNextDueDate();
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _mediator.Send(new CreateNotificationCommand(
-            recurring.UserId,
-            $"£{recurring.Amount} was deposited into your goal automatically."
-        ));
+        // Send notification about recurring deposit
+        var message = $"£{recurring.Amount} was deposited automatically into your goal \"{goal.Name}\".";
+        await _mediator.Send(new CreateNotificationCommand(recurring.UserId, message), cancellationToken);
+
+        // Optional: Notify if goal is now complete
+        if (goal.IsGoalAchieved())
+        {
+            var congratsMsg = $"🎉 Congratulations! Your goal \"{goal.Name}\" has been fully achieved!";
+            await _mediator.Send(new CreateNotificationCommand(recurring.UserId, congratsMsg), cancellationToken);
+        }
 
         return true;
     }

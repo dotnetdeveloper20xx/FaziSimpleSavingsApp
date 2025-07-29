@@ -1,20 +1,28 @@
 ﻿using Application.Common.Security;
 using Application.Interfaces;
 using FaziSimpleSavings.Application.Common.Exceptions;
+using FaziSimpleSavings.Application.Notifications.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Application.Transactions.Commands.CreateManualTransaction;
+
 
 public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManualTransactionCommand, Unit>
 {
     private readonly IAppDbContext _context;
     private readonly IOwnershipValidator _ownershipValidator;
+    private readonly IMediator _mediator;
 
-    public CreateManualTransactionCommandHandler(IAppDbContext context, IOwnershipValidator ownershipValidator)
+    public CreateManualTransactionCommandHandler(
+        IAppDbContext context,
+        IOwnershipValidator ownershipValidator,
+        IMediator mediator)
     {
         _context = context;
         _ownershipValidator = ownershipValidator;
+        _mediator = mediator;
     }
 
     public async Task<Unit> Handle(CreateManualTransactionCommand request, CancellationToken cancellationToken)
@@ -37,6 +45,11 @@ public class CreateManualTransactionCommandHandler : IRequestHandler<CreateManua
 
         await _context.SaveChangesAsync(cancellationToken);
 
+        // Create notification
+        var message = $"£{request.Amount} was manually deposited into your goal \"{goal.Name}\".";
+        await _mediator.Send(new CreateNotificationCommand(request.UserId, message), cancellationToken);
+
         return Unit.Value;
     }
 }
+
