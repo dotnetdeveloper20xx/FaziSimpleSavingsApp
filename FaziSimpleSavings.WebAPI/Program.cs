@@ -96,7 +96,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactClient", policy =>
     {
-        policy.WithOrigins("http://192.168.0.182:3000")
+        policy.WithOrigins("http://192.168.0.182:3000", "http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // if using cookies or Authorization headers
