@@ -17,6 +17,10 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
+    public DbSet<GroupSavingsGoal> GroupSavingsGoals { get; set; } = null!;
+    public DbSet<GroupGoalMember> GroupGoalMembers { get; set; } = null!;
+    public DbSet<GroupTransaction> GroupTransactions { get; set; } = null!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,13 +53,20 @@ public class AppDbContext : DbContext, IAppDbContext
 
         modelBuilder.Entity<Transaction>()
                     .Property(t => t.Amount)
-                    .HasPrecision(18, 2);     
+                    .HasPrecision(18, 2);
 
         modelBuilder.Entity<SavingsGoal>()
                     .HasOne(g => g.User)
                     .WithMany()
                     .HasForeignKey(g => g.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GroupSavingsGoal>()
+                    .HasMany(g => g.Members)
+                    .WithOne(m => m.GroupGoal)
+                    .HasForeignKey(m => m.GroupGoalId)
+                    .OnDelete(DeleteBehavior.Restrict); //  Cascade with Restrict or NoAction
+
 
 
     }

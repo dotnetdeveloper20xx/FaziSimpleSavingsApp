@@ -20,6 +20,12 @@ public class TestDbContext : DbContext, IAppDbContext
 
     public DbSet<UserSettings> UserSettings => Set<UserSettings>();
 
+    public DbSet<GroupSavingsGoal> GroupSavingsGoals => Set<GroupSavingsGoal>();
+
+    public DbSet<GroupGoalMember> GroupGoalMembers => Set<GroupGoalMember>();
+
+    public DbSet<GroupTransaction> GroupTransactions => Set<GroupTransaction>();
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => base.SaveChangesAsync(cancellationToken);
 }

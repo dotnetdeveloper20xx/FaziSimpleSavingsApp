@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FaziSimpleSavings.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250730154853_AddGroupSavingsGoalEntities")]
+    partial class AddGroupSavingsGoalEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,29 +100,6 @@ namespace FaziSimpleSavings.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GroupSavingsGoals");
-                });
-
-            modelBuilder.Entity("FaziSimpleSavings.Core.Entities.GroupTransaction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("GroupGoalId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GroupTransactions");
                 });
 
             modelBuilder.Entity("FaziSimpleSavings.Core.Entities.Notification", b =>
@@ -314,13 +294,11 @@ namespace FaziSimpleSavings.Infrastructure.Migrations
 
             modelBuilder.Entity("FaziSimpleSavings.Core.Entities.GroupGoalMember", b =>
                 {
-                    b.HasOne("FaziSimpleSavings.Core.Entities.GroupSavingsGoal", "GroupGoal")
+                    b.HasOne("FaziSimpleSavings.Core.Entities.GroupSavingsGoal", null)
                         .WithMany("Members")
                         .HasForeignKey("GroupGoalId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("GroupGoal");
                 });
 
             modelBuilder.Entity("FaziSimpleSavings.Core.Entities.SavingsGoal", b =>
