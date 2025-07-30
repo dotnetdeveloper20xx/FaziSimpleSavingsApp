@@ -1,0 +1,490 @@
+{
+  "info": {
+    "name": "FaziSimpleSavings API - Full",
+    "_postman_id": "fazi-savings-collection-complete",
+    "description": "Postman collection for all FaziSimpleSavings API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Secure123!\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Secure123!\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Savings Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/savingsgoals",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "savingsgoals"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Vacation\",\n  \"targetAmount\": 1000\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Savings Goals",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/savingsgoals",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "savingsgoals"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Goal Progress",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/savingsgoals/progress",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "savingsgoals",
+            "progress"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Deposit to Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/savingsgoals/{{goalId}}/deposit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "savingsgoals",
+            "{{goalId}}",
+            "deposit"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 100\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Goal Transactions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/savingsgoals/{{goalId}}/transactions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "savingsgoals",
+            "{{goalId}}",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Group Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Holiday Trip\",\n  \"targetAmount\": 2000\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Group Goals",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Member to Group",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals/{{id}}/members",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals",
+            "{{id}}",
+            "members"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Inviteable Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals/{{id}}/available-users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals",
+            "{{id}}",
+            "available-users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Contribute to Group Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals/{{id}}/contribute",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals",
+            "{{id}}",
+            "contribute"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 50\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "View Group Goal Transactions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals/{{id}}/transactions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals",
+            "{{id}}",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "View Group Goal Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/group-goals/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "group-goals",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/notifications",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "notifications"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Mark Notification As Read",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/notifications/{{id}}/mark-as-read",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "notifications",
+            "{{id}}",
+            "mark-as-read"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User Settings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/usersettings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usersettings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User Settings",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/usersettings",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usersettings"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currency\": \"GBP\",\n  \"receiveEmailNotifications\": true\n}"
+        }
+      },
+      "response": []
+    }
+  ]
+}
