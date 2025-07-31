@@ -15,7 +15,8 @@ using FaziSimpleSavings.Application.Common.Exceptions;
 namespace FaziSimpleSavings.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    [Route("api/group-goals")]
     [Authorize]
     public class GroupGoalsController : ControllerBase
     {
